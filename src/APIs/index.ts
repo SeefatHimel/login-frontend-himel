@@ -12,8 +12,12 @@ export async function getAuthLink() {
     const response = await axios.get(apiEndpoint + "getLink");
     console.log("Auth url ", response);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    error?.response?.message &&
+      toast.error(error?.response?.message, {
+        containerId: "top-right",
+      });
   }
 }
 
@@ -27,34 +31,36 @@ export async function LogOut() {
     });
     RemoveAllCookies();
     return true;
-  } catch (error) {
+  } catch (error: any) {
     return false;
   }
   // navigate("/login");
 }
 
-export async function GetAccessToken() {
+export async function GetJwtAccessToken() {
   RemoveCookie("accessToken");
   const refreshToken = GetCookie("refreshToken");
   const response = await axios.post(apiEndpoint + "token", {
     token: refreshToken,
   });
-  if (response.data.accessToken)
-    SetCookie("accessToken", response.data.accessToken);
-  else {
-    console.log("logout");
-    return true;
-  }
   console.log(response);
+  if (response.data.accessToken) {
+    SetCookie("accessToken", response.data.accessToken);
+    return true;
+  } else {
+    console.log("logout");
+    LogOut();
+    return false;
+  }
 }
 
-export async function GetTokens(code: string) {
+export async function GetJwtTokens(code: string) {
   try {
     const response = await axios.get(apiEndpoint + "login", {
       params: { code: code },
       withCredentials: true,
     });
-    console.log("GetTokens >> api >> ", response.data);
+    console.log("GetJwtTokens >> api >> ", response.data);
     if (response?.data) {
       SetCookie("accessToken", response?.data.accessToken);
       SetCookie("refreshToken", response?.data.refreshToken);
@@ -63,8 +69,11 @@ export async function GetTokens(code: string) {
       });
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    toast.error(error?.response?.message, {
+      containerId: "top-right",
+    });
     RemoveAllCookies();
     return false;
   }
@@ -82,8 +91,12 @@ export async function GetData() {
     return response.data;
   } catch (error: any) {
     if (error?.response?.status === 403) {
-      await GetAccessToken();
-      GetData();
+      const GotJwtAccessToken = await GetJwtAccessToken();
+      GotJwtAccessToken
+        ? GetData()
+        : toast.error(error?.response?.message, {
+            containerId: "top-right",
+          });
     }
     console.error(error?.response?.status);
   }

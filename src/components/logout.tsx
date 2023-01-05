@@ -3,7 +3,7 @@ import { LogoutOutlined } from "@ant-design/icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "antd";
 import GetCookie from "../hooks/getCookie";
-import { GetData, GetTokens, LogOut } from "../APIs";
+import { GetData, GetJwtTokens, LogOut } from "../APIs";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -15,15 +15,15 @@ const Logout = () => {
     if (await LogOut()) navigate("/login");
   };
 
-  const getTokens = async () => {
+  const getJwtAccessToken = async () => {
     const refreshToken = await GetCookie("refreshToken");
 
     const code = await searchParams.get("code");
     if (refreshToken && !code) return;
 
-    const res = await GetTokens(code!);
+    const res = await GetJwtTokens(code!);
     console.log(res);
-    
+
     if (res) navigate("/");
     else navigate("/login");
   };
@@ -41,7 +41,7 @@ const Logout = () => {
 
   useEffect(() => {
     if (!GetCookie("refreshToken")) {
-      getTokens();
+      getJwtAccessToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
