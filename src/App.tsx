@@ -1,4 +1,4 @@
-import Index from "./components";
+import Header from "./components/header";
 import { useEffect } from "react";
 import GetCookie from "./hooks/getCookie";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ function App() {
   });
   return (
     <div className="bg-red-200">
-      <Index />
+      <Header />
     </div>
   );
 }

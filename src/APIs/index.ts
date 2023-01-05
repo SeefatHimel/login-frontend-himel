@@ -90,13 +90,19 @@ export async function GetData() {
     console.log("data ", response.data);
     return response.data;
   } catch (error: any) {
-    if (error?.response?.status === 403) {
+    console.log(error);
+
+    if (error?.response?.status === 401) {
       const GotJwtAccessToken = await GetJwtAccessToken();
       GotJwtAccessToken
         ? GetData()
-        : toast.error(error?.response?.message, {
+        : toast.error(error?.response?.data?.message, {
             containerId: "top-right",
           });
+    } else {
+      toast.error(error?.response?.data?.message, {
+        containerId: "top-right",
+      });
     }
     console.error(error?.response?.status);
   }
