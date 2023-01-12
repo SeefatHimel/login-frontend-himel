@@ -1,4 +1,4 @@
-import Logout from "./logout";
+import HomePage from "../pages";
 
 const Home = () => {
   return (
@@ -14,7 +14,7 @@ const Home = () => {
         </div>
       </div>
       <div className="ms-auto text-center pt-12">
-        <Logout />
+        <HomePage />
         This is Home Page
       </div>
     </div>

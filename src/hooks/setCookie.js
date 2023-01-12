@@ -7,5 +7,6 @@ const SetCookie = (cookieName, value) => {
     sameSite: "strict",
     path: "/",
   });
+  console.log(cookieName, "set");
 };
 export default SetCookie;

@@ -7,6 +7,7 @@ const RemoveCookie = (cookieName, value) => {
 const RemoveAllCookies = () => {
   RemoveCookie("accessToken");
   RemoveCookie("refreshToken");
+  RemoveCookie("User");
   console.log("Cookies Removed");
 };
 export { RemoveCookie, RemoveAllCookies };

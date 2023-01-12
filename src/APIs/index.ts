@@ -4,8 +4,8 @@ import GetCookie from "../hooks/getCookie";
 import { RemoveCookie, RemoveAllCookies } from "../hooks/removeCookie";
 import SetCookie from "../hooks/setCookie";
 
-const apiEndpoint = "https://login-backend-himel.onrender.com/";
-// const apiEndpoint = "http://localhost:3000/";
+// const apiEndpoint = "https://login-backend-himel.onrender.com/";
+const apiEndpoint = "http://localhost:3000/";
 
 export async function getAuthLink() {
   try {
@@ -13,9 +13,9 @@ export async function getAuthLink() {
     console.log("Auth url ", response);
     return response;
   } catch (error: any) {
-    console.error(error);
-    error?.response?.message &&
-      toast.error(error?.response?.message, {
+    console.log(error);
+    error?.response?.data?.message &&
+      toast.error(error?.response?.data?.message, {
         containerId: "top-right",
       });
   }
@@ -55,23 +55,29 @@ export async function GetJwtAccessToken() {
 }
 
 export async function GetJwtTokens(code: string) {
+  console.log("Code :", code);
   try {
     const response = await axios.get(apiEndpoint + "login", {
       params: { code: code },
       withCredentials: true,
     });
+    console.log(response);
+
     console.log("GetJwtTokens >> api >> ", response.data);
     if (response?.data) {
       SetCookie("accessToken", response?.data.accessToken);
       SetCookie("refreshToken", response?.data.refreshToken);
+      SetCookie("user", response?.data?.userData?.name);
       toast.success(response?.data?.message, {
         containerId: "top-right",
       });
     }
+    console.log(response);
+
     return response.data;
   } catch (error: any) {
-    console.error(error);
-    toast.error(error?.response?.message, {
+    console.error("Login Error", error);
+    toast.error(error?.response?.data?.message, {
       containerId: "top-right",
     });
     RemoveAllCookies();
