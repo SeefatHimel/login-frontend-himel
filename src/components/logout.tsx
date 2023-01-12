@@ -9,12 +9,7 @@ const LogOutButton = () => {
     if (await LogOut()) navigate("/login");
   };
   return (
-    <Button
-      type="primary"
-      danger
-      className="fixed right-2 top-2"
-      onClick={() => handleLogOut()}
-    >
+    <Button type="primary" danger onClick={() => handleLogOut()}>
       <LogoutOutlined /> Log out
     </Button>
   );

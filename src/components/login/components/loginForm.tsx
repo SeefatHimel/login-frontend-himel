@@ -17,6 +17,8 @@ const LoginForm: React.FC = () => {
       console.log(data);
       SetCookie("accessToken", data.accessToken);
       SetCookie("refreshToken", data.refreshToken);
+      SetCookie("user", data?.userData?.name);
+
       toast.success(data?.message, {
         containerId: "top-right",
       });
