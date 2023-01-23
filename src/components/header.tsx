@@ -1,25 +1,24 @@
-import GetCookie from "../hooks/getCookie";
 import LogOutButton from "./logOut";
-import { useEffect, useState } from "react";
+import { RootState } from "../storage/store";
+import { useSelector } from "react-redux";
+import { Avatar, Button } from "antd";
+import GetCookie from "../hooks/getCookie";
 
 function Header() {
-  const [user, setUser] = useState(GetCookie("user"));
-  console.log(user, GetCookie("user"));
+  const user = useSelector((state: RootState) => state.user.userDetails);
 
-  useEffect(() => {
-    if (user !== GetCookie("user")) {
-      console.log(user, GetCookie("user"));
-
-      setUser(GetCookie("user"));
-    }
-  }, [user, GetCookie("user")]);
   return (
     <div className="flex justify-between items-center px-4">
       <div className="text-2xl text-blue-500 py-6">Header </div>
-      <div>
-        {user ? user : "no user"}
-        <LogOutButton />
-      </div>
+      {user && (
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {user?.picture && <Avatar src={user.picture} alt="N" />}
+            {user?.name ? user?.name : "no user"}
+          </div>
+          <LogOutButton />        
+        </div>
+      )}
     </div>
   );
 }

@@ -2,11 +2,13 @@ import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import axios from "axios";
 import { toast } from "react-toastify";
-import SetCookie from "../../../hooks/setCookie";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { SaveUserInfo } from "../../../services/saveUserInfo";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const signIn = async (values: any) => {
     console.log(values);
     try {
@@ -15,9 +17,10 @@ const LoginForm: React.FC = () => {
         password: values.password,
       });
       console.log(data);
-      SetCookie("accessToken", data.accessToken);
-      SetCookie("refreshToken", data.refreshToken);
-      SetCookie("user", data?.userData?.name);
+      const savedUserInfo = await SaveUserInfo(data, dispatch);
+      savedUserInfo
+        ? console.log("saved user info")
+        : console.log(" failed to save user info");
 
       toast.success(data?.message, {
         containerId: "top-right",

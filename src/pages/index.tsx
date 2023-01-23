@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "antd";
 import GetCookie from "../hooks/getCookie";
 import { GetData, GetJwtTokens } from "../APIs";
+import { useDispatch } from "react-redux";
+import { setUser } from "../hooks/reducers/userReducer";
+import { SaveUserInfo } from "../services/saveUserInfo";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -10,6 +13,7 @@ const HomePage = () => {
   let path = "";
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
 
   const getJwtAccessToken = async () => {
     const refreshToken = await GetCookie("refreshToken");
@@ -23,10 +27,13 @@ const HomePage = () => {
 
     if (refreshToken && !code) return;
 
-    const res = await GetJwtTokens(code!);
-    console.log(res);
-
-    if (res) navigate("/");
+    const data = await GetJwtTokens(code!);
+    const savedUserInfo = await SaveUserInfo(data, dispatch);
+    savedUserInfo
+      ? console.log("Saved user info")
+      : console.log("Failed to save user info");
+    console.log(data);
+    if (data) navigate("/");
     else navigate("/login");
   };
 

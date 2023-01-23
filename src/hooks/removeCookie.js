@@ -1,13 +1,23 @@
 import Cookie from "js-cookie";
 
+const CookieNames = ["user", "accessToken", "refreshToken", "activeUserID"];
+
 const RemoveCookie = (cookieName, value) => {
-  Cookie.remove(cookieName);
+  try {
+    Cookie.remove(cookieName);
+  } catch (error) {
+    console.log("Failed to remove cookie ", cookieName);
+  }
 };
 
 const RemoveAllCookies = () => {
-  RemoveCookie("accessToken");
-  RemoveCookie("refreshToken");
-  RemoveCookie("user");
+  // const dispatch = useDispatch();
+  CookieNames.map((cookieName) => RemoveCookie(cookieName));
+  // RemoveCookie("accessToken");
+  // RemoveCookie("refreshToken");
+  // RemoveCookie("user");
+  // dispatch(resetUser());
+
   console.log("Cookies Removed");
 };
 export { RemoveCookie, RemoveAllCookies };

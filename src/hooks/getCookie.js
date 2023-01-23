@@ -1,6 +1,6 @@
 import Cookie from "js-cookie";
 
-const GetCookie = (cookieName, value) => {
+const GetCookie = (cookieName) => {
   return Cookie.get(cookieName);
 };
 

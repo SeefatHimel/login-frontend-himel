@@ -26,10 +26,12 @@ export async function LogOut() {
     const { data } = await axios.post(apiEndpoint + "logout");
     console.log(data);
 
+    RemoveAllCookies();
     toast.success(data.message, {
       containerId: "top-right",
     });
-    RemoveAllCookies();
+    
+    window.open("/login", "_self");
     return true;
   } catch (error: any) {
     return false;
@@ -38,7 +40,6 @@ export async function LogOut() {
 }
 
 export async function GetJwtAccessToken() {
-  RemoveCookie("accessToken");
   const refreshToken = GetCookie("refreshToken");
   const response = await axios.post(apiEndpoint + "token", {
     token: refreshToken,
@@ -59,21 +60,17 @@ export async function GetJwtTokens(code: string) {
   try {
     const response = await axios.get(apiEndpoint + "login", {
       params: { code: code },
+      // code: code,
       withCredentials: true,
     });
     console.log(response);
 
     console.log("GetJwtTokens >> api >> ", response.data);
     if (response?.data) {
-      SetCookie("accessToken", response?.data.accessToken);
-      SetCookie("refreshToken", response?.data.refreshToken);
-      SetCookie("user", response?.data?.userData?.name);
       toast.success(response?.data?.message, {
         containerId: "top-right",
       });
     }
-    console.log(response);
-
     return response.data;
   } catch (error: any) {
     console.error("Login Error", error);
