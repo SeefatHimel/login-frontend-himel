@@ -21,7 +21,7 @@ const LoginForm: React.FC = () => {
       toast.success(data?.message, {
         containerId: "top-right",
       });
-      navigate("/home");
+      navigate("/");
     }
   };
 
