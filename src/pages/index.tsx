@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "antd";
 import GetCookie from "../hooks/getCookie";
-import { GetData, GetJwtTokens } from "../APIs";
+import { GetData, GetJwtTokens, LogOut } from "../APIs";
 import { useDispatch } from "react-redux";
-import { setUser } from "../hooks/reducers/userReducer";
 import { SaveUserInfo } from "../services/saveUserInfo";
+import { resetUser } from "../hooks/reducers/userReducer";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const HomePage = () => {
     if (refreshToken && !code) return;
 
     const data = await GetJwtTokens(code!);
-    const savedUserInfo = await SaveUserInfo(data, dispatch);
+    const savedUserInfo = data && (await SaveUserInfo(data, dispatch));
     savedUserInfo
       ? console.log("Saved user info")
       : console.log("Failed to save user info");
@@ -40,6 +40,10 @@ const HomePage = () => {
   async function getData() {
     const res: any = await GetData();
     if (res && res[0]) setUseData(res[0]);
+    else if (await LogOut()) {
+      dispatch(resetUser());
+      navigate("/login");
+    }
   }
   async function logTokens() {
     const accessToken = GetCookie("accessToken");

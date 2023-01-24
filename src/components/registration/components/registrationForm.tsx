@@ -56,37 +56,30 @@ const RegistrationForm: React.FC = () => {
   };
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
-    toast.error("Failed", {
-      containerId: "top-right",
-    });
+    errorInfo &&
+      errorInfo.errorFields.map((ef: any) => {
+        toast.error(ef.errors[0], {
+          containerId: "top-right",
+        });
+      });
   };
-  const checkEmailValidity = async (ss: any) => {
+  const checkEmailValidity = async (passedEmail: any) => {
     console.log(email);
     try {
       // const response =
-       await axios.post(
-        "http://localhost:3000/register_email",
-        {
-          headers: {},
-          data: { email: `${email}` },
-          Credential: true,
-        }
-      );
+      await axios.post("http://localhost:3000/register_email", {
+        headers: {},
+        data: { email: `${email ? email : passedEmail}` },
+        Credential: true,
+      });
       setEmailStatus("success");
       return true;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error?.response?.data?.message);
       setEmailStatus("error");
       return false;
     }
-    // console.log(response);
   };
-  useEffect(() => {
-    if (emailStatus === "validating") {
-      // checkEmailValidity(email);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailStatus, email]);
   return (
     <Form
       name="basic"
@@ -123,11 +116,25 @@ const RegistrationForm: React.FC = () => {
           { required: true, message: "Please input a valid email!" },
           {
             type: "email",
+            whitespace: false,
             min: 0,
             max: 200,
-            message: "Please input a valid email.",
+            message: `Please input a valid email.`,
           },
+          ({ getFieldValue }) => ({
+            async validator(_, value) {
+              let v;
+              if (emailStatus === "validating" && value?.length >= 5) {
+                v = await checkEmailValidity(value);
+              }
+              if (v) {
+                return Promise.resolve();
+              }
+              if (!v) return Promise.reject(new Error("Email already in use!"));
+            },
+          }),
         ]}
+        // help="Something breaks the rule."
       >
         <Input
           placeholder="I'm the content is being validated"
@@ -144,18 +151,29 @@ const RegistrationForm: React.FC = () => {
         <Input.Password />
       </Form.Item>
 
+      <Form.Item
+        label="Re-type Password"
+        name="passwordRe"
+        rules={[
+          { required: true, message: "Please re-input your password!" },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error("Passwords does not match!"));
+            },
+          }),
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit" className="bg-red-500">
           Submit
         </Button>
       </Form.Item>
-      <button
-        onClick={() => {
-          checkEmailValidity(email);
-        }}
-      >
-        vv
-      </button>
     </Form>
   );
 };

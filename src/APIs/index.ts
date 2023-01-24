@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import GetCookie from "../hooks/getCookie";
-import { RemoveCookie, RemoveAllCookies } from "../hooks/removeCookie";
+import { RemoveAllCookies } from "../hooks/removeCookie";
 import SetCookie from "../hooks/setCookie";
 
 // const apiEndpoint = "https://login-backend-himel.onrender.com/";
@@ -25,33 +25,36 @@ export async function LogOut() {
   try {
     const { data } = await axios.post(apiEndpoint + "logout");
     console.log(data);
-
     RemoveAllCookies();
     toast.success(data.message, {
       containerId: "top-right",
     });
-    
-    window.open("/login", "_self");
     return true;
   } catch (error: any) {
     return false;
   }
-  // navigate("/login");
 }
 
 export async function GetJwtAccessToken() {
   const refreshToken = GetCookie("refreshToken");
-  const response = await axios.post(apiEndpoint + "token", {
-    token: refreshToken,
-  });
-  console.log(response);
-  if (response.data.accessToken) {
-    SetCookie("accessToken", response.data.accessToken);
-    return true;
-  } else {
+  if (!refreshToken) {
     console.log("logout");
-    LogOut();
+    toast.error("Response Token not found", {
+      containerId: "top-right",
+    });
     return false;
+  } else {
+    const response = await axios.post(apiEndpoint + "token", {
+      token: refreshToken,
+    });
+    console.log(response);
+    if (response.data.accessToken) {
+      SetCookie("accessToken", response.data.accessToken);
+      return true;
+    } else {
+      console.log("logout");
+      return false;
+    }
   }
 }
 
@@ -102,6 +105,7 @@ export async function GetData() {
         : toast.error(error?.response?.data?.message, {
             containerId: "top-right",
           });
+      if (!GotJwtAccessToken) return false;
     } else {
       toast.error(error?.response?.data?.message, {
         containerId: "top-right",

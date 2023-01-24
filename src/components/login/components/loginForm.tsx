@@ -16,8 +16,7 @@ const LoginForm: React.FC = () => {
         email: values.email,
         password: values.password,
       });
-      console.log(data);
-      const savedUserInfo = await SaveUserInfo(data, dispatch);
+      const savedUserInfo = data && (await SaveUserInfo(data, dispatch));
       savedUserInfo
         ? console.log("saved user info")
         : console.log(" failed to save user info");

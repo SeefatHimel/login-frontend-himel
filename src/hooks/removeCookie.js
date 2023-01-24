@@ -11,12 +11,10 @@ const RemoveCookie = (cookieName, value) => {
 };
 
 const RemoveAllCookies = () => {
-  // const dispatch = useDispatch();
   CookieNames.map((cookieName) => RemoveCookie(cookieName));
   // RemoveCookie("accessToken");
   // RemoveCookie("refreshToken");
   // RemoveCookie("user");
-  // dispatch(resetUser());
 
   console.log("Cookies Removed");
 };
