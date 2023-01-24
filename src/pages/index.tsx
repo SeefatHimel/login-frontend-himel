@@ -40,9 +40,11 @@ const HomePage = () => {
   async function getData() {
     const res: any = await GetData();
     if (res && res[0]) setUseData(res[0]);
-    else if (await LogOut()) {
-      dispatch(resetUser());
-      navigate("/login");
+    if (res === -1) {
+      if (await LogOut()) {
+        dispatch(resetUser());
+        navigate("/login");
+      }
     }
   }
   async function logTokens() {

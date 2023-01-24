@@ -110,9 +110,7 @@ export async function GetData() {
             containerId: "top-right",
           });
       console.log("GotJwtAccessToken", GotJwtAccessToken);
-
-      if (!GotJwtAccessToken) return false;
-      return true;
+      if(!GotJwtAccessToken) return -1;
     } else {
       toast.error(error?.response?.data?.message, {
         containerId: "top-right",
