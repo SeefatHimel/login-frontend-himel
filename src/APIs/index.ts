@@ -9,6 +9,7 @@ const localHost = process.env.NODE_ENV === "development" ? true : false;
 const apiEndpoint = localHost
   ? process.env.REACT_APP_API_URL_LOCAL
   : process.env.REACT_APP_API_URL;
+console.log("🚀 ~ file: index.ts:12 ~ process.env", process.env);
 
 export async function getAuthLink() {
   try {

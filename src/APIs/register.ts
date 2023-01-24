@@ -4,7 +4,7 @@ const localHost = process.env.NODE_ENV === "development" ? true : false;
 console.log(
   "🚀 ~ file: register.ts:4 ~ process.env.MODE",
   localHost,
-  typeof process.env.MODE
+  process.env.MODE
 );
 
 const apiEndpoint = localHost
