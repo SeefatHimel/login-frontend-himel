@@ -105,10 +105,12 @@ export async function GetData() {
     if (error?.response?.status === 401) {
       const GotJwtAccessToken = await GetJwtAccessToken();
       GotJwtAccessToken
-        ? GetData()
+        ? await GetData()
         : toast.error(error?.response?.data?.message, {
             containerId: "top-right",
           });
+      console.log("GotJwtAccessToken", GotJwtAccessToken);
+
       if (!GotJwtAccessToken) return false;
     } else {
       toast.error(error?.response?.data?.message, {
