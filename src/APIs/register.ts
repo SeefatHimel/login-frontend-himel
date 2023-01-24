@@ -44,3 +44,19 @@ export async function CheckEmailValidity(passedEmail: any) {
     return false;
   }
 }
+
+export async function SignIn(values: any) {
+  try {
+    const { data } = await axios.post(apiEndpoint + "signIn", {
+      email: values.email,
+      password: values.password,
+    });
+    return data;
+  } catch (error: any) {
+    const { data } = error.response;
+
+    toast.error(data?.message, {
+      containerId: "top-right",
+    });
+  }
+}

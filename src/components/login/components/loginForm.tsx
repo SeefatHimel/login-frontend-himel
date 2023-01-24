@@ -1,21 +1,18 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SaveUserInfo } from "../../../services/saveUserInfo";
+import { SignIn } from "../../../APIs/register";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const signIn = async (values: any) => {
     console.log(values);
-    try {
-      const { data } = await axios.post("http://localhost:3000/signIn", {
-        email: values.email,
-        password: values.password,
-      });
+    const data = await SignIn(values);
+    if (data) {
       const savedUserInfo = data && (await SaveUserInfo(data, dispatch));
       savedUserInfo
         ? console.log("saved user info")
@@ -25,12 +22,6 @@ const LoginForm: React.FC = () => {
         containerId: "top-right",
       });
       navigate("/home");
-    } catch (error: any) {
-      const { data } = error.response;
-
-      toast.error(data?.message, {
-        containerId: "top-right",
-      });
     }
   };
 
