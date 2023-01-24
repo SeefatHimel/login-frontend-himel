@@ -5,7 +5,10 @@ import { RemoveAllCookies } from "../hooks/removeCookie";
 import SetCookie from "../hooks/setCookie";
 
 // const apiEndpoint = "https://login-backend-himel.onrender.com/";
-const apiEndpoint = "http://localhost:3000/";
+const localHost = process.env.NODE_ENV === "development" ? true : false;
+const apiEndpoint = localHost
+  ? process.env.REACT_APP_API_URL_LOCAL
+  : process.env.REACT_APP_API_URL;
 
 export async function getAuthLink() {
   try {
